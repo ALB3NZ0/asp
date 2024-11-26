@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Shoes_store.Models.Basket>
+
+<h1>Ваша корзина</h1>
+
+<form method="post" asp-action="UpdateCart">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Название товара</th>
+                <th>Цена за штуку</th>
+                <th>Количество</th>
+                <th>Общая цена</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Product.Price.ToString("C2")</td>
+                    <td>
+                        <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control" />
+                        <input type="hidden" name="productId" value="@item.IdProduct" />
+                    </td>
+                    <td>
+                        @((item.Product.Price * item.Quantity).ToString("C2"))
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-primary">Обновить</button>
+                        <form action="@Url.Action("RemoveFromCart", "Catalog")" method="post" style="display:inline;">
+                            <input type="hidden" name="productId" value="@item.IdProduct" />
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+<!-- Общая стоимость корзины -->
+<h3>Общая стоимость: 
+    @Model.Sum(x => x.Product.Price * x.Quantity).ToString("C2")
+</h3>
