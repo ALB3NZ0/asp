@@ -15,5 +15,11 @@ public partial class Review
 
     public DateTime ReviewDate { get; set; }
 
-    public virtual Product IdProductNavigation { get; set; } = null!;
+    public int? IdUser { get; set; }
+
+    // Навигационные свойства
+
+    public virtual Product Product { get; set; } = null!;
+
+    public virtual User? User { get; set; }
 }

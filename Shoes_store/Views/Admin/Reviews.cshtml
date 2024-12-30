@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Shoes_store.Models.Review>
+
+@{
+    ViewData["Title"] = "Отзывы";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Продукт</th>
+            <th>Пользователь</th>
+            <th>Оценка</th>
+            <th>Комментарий</th>
+            <th>Дата</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.Product.Name</td>
+                <td>@review.User.FullName</td>
+                <td>@review.Rating</td>
+                <td>@review.Comment</td>
+                <td>@review.ReviewDate.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a href="@Url.Action("EditReview", new { id = review.IdReview })" class="btn btn-primary">Редактировать</a>
+                    <a href="@Url.Action("DeleteReview", new { id = review.IdReview })" class="btn btn-danger">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("CreateReview")" class="btn btn-success">Добавить новый отзыв</a>

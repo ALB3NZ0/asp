@@ -16,6 +16,9 @@ public class AuthController : Controller
         _context = context;
     }
 
+
+
+
     [HttpGet]
     public IActionResult Login()
     {
@@ -25,22 +28,29 @@ public class AuthController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(string email, string password)
     {
+        // Находим пользователя по email и хешу пароля
         var user = _context.Users.FirstOrDefault(u => u.Email == email && u.PasswordHash == HashPassword(password));
 
         if (user != null)
         {
+            // Определяем роль пользователя
+            var role = user.RoleId == 2 ? "Admin" : "User"; // 2 — ID для администраторов
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, "User")
+                new Claim(ClaimTypes.Role, role) // Присваиваем роль
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties { IsPersistent = true };
 
+            // Аутентификация
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-            return RedirectToAction("Index", "Catalog");
+
+            // Перенаправляем в зависимости от роли
+            return RedirectToAction("Index", role == "Admin" ? "Admin" : "Catalog");
         }
 
         ViewBag.ErrorMessage = "Неверный логин или пароль.";
@@ -67,8 +77,8 @@ public class AuthController : Controller
         {
             FullName = fullName,
             Email = email,
-            PasswordHash = HashPassword(password)
-            // Здесь может быть дополнительные поля, такие как IdRole и т.д.
+            PasswordHash = HashPassword(password),
+            RoleId = 1 // Задаем роль по умолчанию (обычный пользователь)
         };
 
         _context.Users.Add(user);

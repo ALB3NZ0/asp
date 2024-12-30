@@ -1,0 +1,15 @@
+﻿@model Shoes_store.Models.Brand
+
+<h2>Создать бренд</h2>
+
+<form asp-action="CreateBrand" method="post">
+    <div>
+        <label>Название:</label>
+        <input asp-for="BrandName" required />
+    </div>
+    <div>
+        <label>Описание:</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    <button type="submit">Создать</button>
+</form>

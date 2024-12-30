@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Shoes_store.Models.Favorite>
+
+@{
+    ViewData["Title"] = "Favorites";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Product</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var favorite in Model)
+        {
+            <tr>
+                <td>@favorite.User.FullName</td>
+                <td>@favorite.Product.Name</td>
+                <td>
+                    <a href="@Url.Action("DeleteFavorite", new { id = favorite.IdFavorites })" class="btn btn-danger">Delete</a>
+                </td>
+                <td>
+                    <a href="@Url.Action("EditFavorite", new { id = favorite.IdFavorites })" class="btn btn-primary">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("CreateFavorite")" class="btn btn-success">Create New Favorite</a>

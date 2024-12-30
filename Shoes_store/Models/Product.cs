@@ -23,12 +23,13 @@ public partial class Product
 
     public string? ImageUrl { get; set; }
 
+    // Навигационные свойства
 
-    // Навигационное свойство для связи с брендом
-    public Brand Brand { get; set; }  // Корректное навигационное свойство
-
-    // Другие связи с корзинами и отзывами
     public virtual ICollection<Basket> Baskets { get; set; } = new List<Basket>();
+
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
+
+    public virtual Brand Brand { get; set; } = null!;
+
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

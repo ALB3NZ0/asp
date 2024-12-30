@@ -36,51 +36,57 @@ public partial class ShoppingDbContext : DbContext
         modelBuilder.Entity<Basket>(entity =>
         {
             entity.HasKey(e => e.IdBasket).HasName("PK__Basket__FFA73A6361BACAA5");
-
             entity.ToTable("Basket");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.Baskets)
+            entity.HasOne(d => d.Product)
+                .WithMany(p => p.Baskets)
                 .HasForeignKey(d => d.IdProduct)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Basket__IdProduc__5165187F");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Baskets)
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Baskets)
                 .HasForeignKey(d => d.IdUser)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Basket__IdUser__52593CB8");
         });
 
         modelBuilder.Entity<Brand>(entity =>
         {
             entity.HasKey(e => e.IdBrand).HasName("PK__Brands__662A6659FEBAE792");
-
             entity.Property(e => e.BrandName)
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+
+            
+            entity.HasMany(b => b.Products)
+                  .WithOne(p => p.Brand)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Favorite>(entity =>
         {
             entity.HasKey(e => e.IdFavorites).HasName("PK__Favorite__085BD2A2CD61BE60");
 
-            entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.Favorites)
+            entity.HasOne(d => d.Product)
+                .WithMany(p => p.Favorites)
                 .HasForeignKey(d => d.IdProduct)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Favorites__IdPro__5535A963");
 
-            entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.Favorites)
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Favorites)
                 .HasForeignKey(d => d.IdUser)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Favorites__IdUse__5629CD9C");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(e => e.IdProduct).HasName("PK__Products__2E8946D499085657");
-
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -95,33 +101,38 @@ public partial class ShoppingDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.Brand).WithMany(p => p.Products)
+            entity.HasOne(d => d.Brand)
+                .WithMany(p => p.Products)
                 .HasForeignKey(d => d.IdBrand)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Products__IdBran__4E88ABD4");
         });
 
         modelBuilder.Entity<Review>(entity =>
         {
             entity.HasKey(e => e.IdReview).HasName("PK__Reviews__BB56047DE8FCDFAD");
-
             entity.Property(e => e.Comment).IsUnicode(false);
             entity.Property(e => e.ReviewDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
 
-            entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.Reviews)
+            entity.HasOne(d => d.Product)
+                .WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.IdProduct)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Reviews__IdProdu__59063A47");
+
+            entity.HasOne(d => d.User)
+                .WithMany(p => p.Reviews)
+                .HasForeignKey(d => d.IdUser)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Reviews_Users");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.IdUser).HasName("PK__Users__B7C926383C188E54");
-
             entity.HasIndex(e => e.Email, "UQ__Users__A9D10534FB4BE0ED").IsUnique();
-
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -135,6 +146,7 @@ public partial class ShoppingDbContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

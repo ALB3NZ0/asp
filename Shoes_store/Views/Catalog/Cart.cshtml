@@ -39,7 +39,7 @@
     </table>
 </form>
 
-<!-- Общая стоимость корзины -->
+
 <h3>Общая стоимость: 
     @Model.Sum(x => x.Product.Price * x.Quantity).ToString("C2")
 </h3>

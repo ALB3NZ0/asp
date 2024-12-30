@@ -1,0 +1,36 @@
+﻿@model Shoes_store.Models.Product
+
+<h2>Редактировать продукт</h2>
+
+<form asp-action="EditProduct" method="post">
+    <div>
+        <label>Название:</label>
+        <input asp-for="Name" required />
+    </div>
+    <div>
+        <label>Описание:</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    <div>
+        <label>Цена:</label>
+        <input asp-for="Price" required />
+    </div>
+    <div>
+        <label>Бренд:</label>
+        <select asp-for="IdBrand" asp-items="@(new SelectList(ViewBag.Brands, "IdBrand", "BrandName"))" required></select>
+    </div>
+    <div>
+        <label>Количество:</label>
+        <input asp-for="Stock" required />
+    </div>
+    <div>
+        <label>Размер:</label>
+        <input asp-for="Size" />
+    </div>
+    <div>
+        <label>Ретро:</label>
+        <input asp-for="IsRetro" type="checkbox" />
+    </div>
+    <input type="hidden" asp-for="IdProduct" />
+    <button type="submit">Сохранить</button>
+</form>

@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Shoes_store.Models.Brand>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Бренды</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            border-bottom: 2px solid #17a2b8;
+            padding-bottom: 10px;
+        }
+        table {
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Бренды</h2>
+
+        <p>
+            <a asp-action="CreateBrand" class="btn btn-primary">Добавить новый бренд</a>
+        </p>
+
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var brand in Model)
+                {
+                    <tr>
+                        <td>@brand.BrandName</td>
+                        <td>@brand.Description</td>
+                        <td>
+                            <a asp-action="EditBrand" asp-route-id="@brand.IdBrand" class="btn btn-warning btn-sm">Редактировать</a> |
+                            <a asp-action="DeleteBrand" asp-route-id="@brand.IdBrand" class="btn btn-danger btn-sm">Удалить</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

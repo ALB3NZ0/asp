@@ -1,0 +1,16 @@
+﻿@model Shoes_store.Models.Brand
+
+<h2>Редактировать бренд</h2>
+
+<form asp-action="EditBrand" method="post">
+    <div>
+        <label>Название:</label>
+        <input asp-for="BrandName" required />
+    </div>
+    <div>
+        <label>Описание:</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    <input type="hidden" asp-for="IdBrand" />
+    <button type="submit">Сохранить</button>
+</form>

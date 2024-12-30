@@ -13,22 +13,60 @@ public class CatalogController : Controller
         _context = context;
     }
 
-    // Вывод каталога товаров
-    public IActionResult Index()
+    
+    public IActionResult Index(string searchTerm, decimal? minPrice, decimal? maxPrice, string sortOrder)
     {
-        var products = _context.Products.ToList(); // Загружаем все продукты
-        return View(products);
+        ViewBag.CurrentFilter = searchTerm;
+        ViewBag.MinPrice = minPrice;
+        ViewBag.MaxPrice = maxPrice;
+
+        var products = _context.Products.AsQueryable();
+
+        
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            products = products.Where(p => p.Name.Contains(searchTerm) ||
+                                            p.Description.Contains(searchTerm));
+        }
+
+        if (minPrice.HasValue)
+        {
+            products = products.Where(p => p.Price >= minPrice.Value);
+        }
+        if (maxPrice.HasValue)
+        {
+            products = products.Where(p => p.Price <= maxPrice.Value);
+        }
+
+        ViewBag.PriceSortParamAsc = sortOrder == "PriceAsc" ? "price_desc" : "PriceAsc";
+        ViewBag.PriceSortParamDesc = sortOrder == "PriceDesc" ? "price_asc" : "PriceDesc";
+
+        switch (sortOrder)
+        {
+            case "price_desc":
+                products = products.OrderByDescending(p => p.Price);
+                break;
+            case "PriceAsc":
+                products = products.OrderBy(p => p.Price);
+                break;
+            case "price_asc":
+                products = products.OrderBy(p => p.Price);
+                break;
+            default:
+                products = products.OrderBy(p => p.Name);
+                break;
+        }
+
+        return View(products.ToList());
     }
 
-    // Добавление товара в корзину
     [HttpPost]
     public IActionResult AddToCart(int productId)
     {
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (int.TryParse(userIdClaim, out var userId))
         {
-            var product = _context.Products.Find(productId); // Найти продукт по ID
-
+            var product = _context.Products.Find(productId); 
             if (product != null)
             {
                 var basketItem = _context.Baskets
@@ -36,12 +74,10 @@ public class CatalogController : Controller
 
                 if (basketItem != null)
                 {
-                    // Если товар уже в корзине, увеличиваем количество
                     basketItem.Quantity++;
                 }
                 else
                 {
-                    // Если товара в корзине нет, создаем новую запись
                     basketItem = new Basket
                     {
                         IdProduct = productId,
@@ -51,33 +87,30 @@ public class CatalogController : Controller
                     _context.Baskets.Add(basketItem);
                 }
 
-                _context.SaveChanges(); // Сохраняем изменения
+                _context.SaveChanges();
             }
         }
 
         return RedirectToAction("Index");
     }
 
-    // Отображение корзины
     public IActionResult Cart()
     {
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (int.TryParse(userIdClaim, out var userId))
         {
-            // Получаем все товары в корзине с информацией о бренде
             var basketItems = _context.Baskets
-                .Include(b => b.Product) // Загружаем продукт
-                .ThenInclude(p => p.Brand) // Загружаем бренд для каждого продукта
+                .Include(b => b.Product) 
+                .ThenInclude(p => p.Brand) 
                 .Where(b => b.IdUser == userId)
                 .ToList();
 
             return View(basketItems);
         }
-
         return RedirectToAction("Index");
     }
 
-    // Обновление корзины (изменение количества товара)
+    
     [HttpPost]
     public IActionResult UpdateCart(int productId, int quantity)
     {
@@ -91,21 +124,21 @@ public class CatalogController : Controller
             {
                 if (quantity > 0)
                 {
-                    basketItem.Quantity = quantity;  // Обновляем количество товара в корзине
+                    basketItem.Quantity = quantity;
                 }
                 else
                 {
-                    _context.Baskets.Remove(basketItem);  // Если количество 0 или меньше, удаляем товар
+                    _context.Baskets.Remove(basketItem);
                 }
 
-                _context.SaveChanges();  // Сохраняем изменения в базе данных
+                _context.SaveChanges();
             }
         }
 
         return RedirectToAction("Cart");
     }
 
-    // Удаление товара из корзины
+    
     [HttpPost]
     public IActionResult RemoveFromCart(int productId)
     {
@@ -117,8 +150,8 @@ public class CatalogController : Controller
 
             if (basketItem != null)
             {
-                _context.Baskets.Remove(basketItem);  // Удаляем товар из корзины
-                _context.SaveChanges();  // Сохраняем изменения
+                _context.Baskets.Remove(basketItem);
+                _context.SaveChanges();
             }
         }
 

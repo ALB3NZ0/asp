@@ -6,6 +6,24 @@
 
 <h2>Каталог товаров</h2>
 
+<form method="get" asp-action="Index">
+    <div class="input-group mb-3">
+        <input type="text" name="searchTerm" class="form-control" placeholder="Поиск..." value="@ViewBag.CurrentFilter" />
+        <button type="submit" class="btn btn-outline-secondary">Найти</button>
+    </div>
+
+    <div class="input-group mb-3">
+        <input type="number" name="minPrice" class="form-control" placeholder="Мин. цена" value="@ViewBag.MinPrice" />
+        <input type="number" name="maxPrice" class="form-control" placeholder="Макс. цена" value="@ViewBag.MaxPrice" />
+        <button type="submit" class="btn btn-outline-secondary">Фильтровать по цене</button>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index" asp-route-sortOrder="@ViewBag.PriceSortParamAsc">Сортировать по возрастанию цены</a> |
+    <a asp-action="Index" asp-route-sortOrder="@ViewBag.PriceSortParamDesc">Сортировать по убыванию цены</a>
+</div>
+
 <div class="row">
     @foreach (var product in Model)
     {

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Shoes_store.Models.Product>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Продукты</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 10px;
+        }
+
+        table {
+            margin-top: 20px;
+        }
+
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .img-fluid {
+            max-width: 100px; /* Ограничить максимальную ширину изображения */
+            height: auto; /* Сохранять пропорции изображения */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Продукты</h2>
+
+        <p>
+            <a asp-action="CreateProduct" class="btn btn-primary">Добавить новый продукт</a>
+        </p>
+
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Бренд</th>
+                    <th>Изображение</th> <!-- Новый столбец для изображений -->
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td>@product.Name</td>
+                        <td>@product.Price.ToString("C2", System.Globalization.CultureInfo.CurrentCulture)</td>
+                        <td>@product.Brand.BrandName</td>
+                        <td>
+                            <img src="@product.ImageUrl" alt="Изображение @product.Name" class="img-fluid" /> <!-- Вывод изображения -->
+                        </td>
+                        <td>
+                            <a asp-action="EditProduct" asp-route-id="@product.IdProduct" class="btn btn-warning btn-sm">Редактировать</a> |
+                            <a asp-action="DeleteProduct" asp-route-id="@product.IdProduct" class="btn btn-danger btn-sm">Удалить</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

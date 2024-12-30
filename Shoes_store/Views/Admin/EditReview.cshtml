@@ -1,0 +1,44 @@
+﻿@model Shoes_store.Models.Review
+
+@{
+    ViewData["Title"] = "Редактировать отзыв";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="EditReview" method="post">
+
+    <input type="hidden" asp-for="IdReview" />
+
+    <div class="form-group">
+        <label for="Product">Продукт</label>
+        @Html.DropDownListFor(
+                 model => model.IdProduct,
+                 new SelectList(ViewBag.Products, "IdProduct", "Name"),
+                 "Выберите продукт",
+                 new { @class = "form-control" }
+                 )
+    </div>
+
+    <div class="form-group">
+        <label for="User">Пользователь</label>
+        @Html.DropDownListFor(
+                 model => model.IdUser,
+                 new SelectList(ViewBag.Users, "IdUser", "FullName"),
+                 "Выберите пользователя",
+                 new { @class = "form-control" }
+                 )
+    </div>
+
+    <div class="form-group">
+        <label for="Rating">Оценка</label>
+        <input type="number" class="form-control" id="Rating" asp-for="Rating" min="1" max="5" />
+    </div>
+
+    <div class="form-group">
+        <label for="Comment">Комментарий</label>
+        <textarea class="form-control" id="Comment" asp-for="Comment"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+</form>

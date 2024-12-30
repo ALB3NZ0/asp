@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Shoes_store.Models.Basket>
+
+@{
+    ViewData["Title"] = "Baskets";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var basket in Model)
+        {
+            <tr>
+                <td>@basket.User.FullName</td>
+                <td>@basket.Product.Name</td>
+                <td>@basket.Quantity</td>
+                <td>
+                    <a href="@Url.Action("EditBasket", new { id = basket.IdBasket })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("DeleteBasket", new { id = basket.IdBasket })" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("CreateBasket")" class="btn btn-success">Create New Basket</a>
